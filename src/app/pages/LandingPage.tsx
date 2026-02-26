@@ -3,9 +3,10 @@ import { useNavigate, Link } from 'react-router';
 import {
   Upload, Zap, CheckCircle, ArrowRight, Star, Users, TrendingUp, Clock,
   Search, MessageSquare, BarChart2, Target, Shield, ChevronRight, FileText,
-  Award, AlertCircle
+  Award, AlertCircle, LogIn
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { useAuth } from '../contexts/AuthContext';
 
 const testimonials = [
   {
@@ -133,16 +134,29 @@ const plans = [
 
 export function LandingPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
 
   const handleFileSelect = useCallback((file: File) => {
+    if (!user) {
+      navigate('/auth?returnTo=/');
+      return;
+    }
     if (file && file.type === 'application/pdf') {
       setFileName(file.name);
       setTimeout(() => navigate('/processing'), 600);
     }
-  }, [navigate]);
+  }, [navigate, user]);
+
+  const handleUploadClick = () => {
+    if (!user) {
+      navigate('/auth?returnTo=/');
+      return;
+    }
+    fileInputRef.current?.click();
+  };
 
   const onDrop = useCallback(
     (e: React.DragEvent) => {
@@ -184,13 +198,24 @@ export function LandingPage() {
               <a href="#recursos" style={{ color: '#94a3b8', fontSize: '0.875rem' }} className="hover:text-white transition-colors">Recursos</a>
               <a href="#precos" style={{ color: '#94a3b8', fontSize: '0.875rem' }} className="hover:text-white transition-colors">Preços</a>
             </div>
+            {user ? (
             <button
-              onClick={() => fileInputRef.current?.click()}
+              onClick={handleUploadClick}
               className="px-4 py-2 rounded-lg text-white transition-all hover:opacity-90 text-sm"
               style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 600 }}
             >
               Analisar meu perfil
             </button>
+            ) : (
+              <Link
+                to="/auth"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-white transition-all hover:opacity-90 text-sm"
+                style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 600 }}
+              >
+                <LogIn className="w-4 h-4" />
+                Entrar / Cadastrar
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -258,7 +283,7 @@ export function LandingPage() {
             onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
             onDragLeave={() => setDragging(false)}
             onDrop={onDrop}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={handleUploadClick}
           >
             <input
               ref={fileInputRef}
@@ -286,25 +311,31 @@ export function LandingPage() {
                   <Upload className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <p style={{ color: '#f1f5f9', fontSize: '1.1rem', fontWeight: 600 }}>
-                    Arraste seu PDF aqui
-                  </p>
+                  {user ? (
+                    <p style={{ color: '#f1f5f9', fontSize: '1.1rem', fontWeight: 600 }}>
+                      Arraste seu PDF aqui
+                    </p>
+                  ) : (
+                    <p style={{ color: '#f1f5f9', fontSize: '1.1rem', fontWeight: 600 }}>
+                      Entre para analisar seu perfil
+                    </p>
+                  )}
                   <p style={{ color: '#94a3b8', fontSize: '0.875rem', marginTop: 4 }}>
-                    ou clique para selecionar o arquivo
+                    {user ? 'ou clique para selecionar o arquivo' : 'Gratuito · Rápido · Seguro'}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <FileText className="w-4 h-4 text-blue-400" />
                   <span style={{ color: '#60a5fa', fontSize: '0.75rem' }}>
-                    Apenas arquivos PDF do LinkedIn
+                    {user ? 'Apenas arquivos PDF do LinkedIn' : 'Google, GitHub ou email — sem senha'}
                   </span>
                 </div>
                 <button
                   className="w-full py-3 rounded-xl text-white transition-all hover:opacity-90"
                   style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 700 }}
-                  onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+                  onClick={(e) => { e.stopPropagation(); handleUploadClick(); }}
                 >
-                  Analisar meu perfil agora →
+                  {user ? 'Analisar meu perfil agora →' : 'Entrar e analisar meu perfil →'}
                 </button>
               </div>
             )}
@@ -455,7 +486,7 @@ export function LandingPage() {
                 </div>
               ))}
               <button
-                onClick={() => fileInputRef.current?.click()}
+                onClick={handleUploadClick}
                 className="mt-6 px-6 py-3 rounded-xl text-white flex items-center gap-2 transition-all hover:opacity-90"
                 style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 700 }}
               >
@@ -590,7 +621,7 @@ export function LandingPage() {
                   ))}
                 </div>
                 <button
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={handleUploadClick}
                   className="w-full py-3 rounded-xl transition-all hover:opacity-90 text-sm"
                   style={{
                     background: plan.popular ? 'linear-gradient(135deg, #2563eb, #7c3aed)' : plan.bg,
@@ -622,7 +653,7 @@ export function LandingPage() {
             Junte-se a mais de 15.000 profissionais que já transformaram seus perfis com o LinkedIn Analyzer.
           </p>
           <button
-            onClick={() => fileInputRef.current?.click()}
+            onClick={handleUploadClick}
             className="px-8 py-4 rounded-xl text-white flex items-center gap-3 mx-auto transition-all hover:scale-105"
             style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 700, fontSize: '1.05rem' }}
           >
