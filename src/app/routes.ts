@@ -8,6 +8,7 @@ import { ProcessingPage } from './pages/ProcessingPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { JobComparatorPage } from './pages/JobComparatorPage';
 import { MessageGeneratorPage } from './pages/MessageGeneratorPage';
+import { AccountPage } from './pages/AccountPage';
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
           { path: '/dashboard', Component: DashboardPage },
           { path: '/comparador', Component: JobComparatorPage },
           { path: '/mensagens', Component: MessageGeneratorPage },
+          { path: '/conta', Component: AccountPage },
         ],
       },
     ],

@@ -133,7 +133,7 @@ function UserMenu() {
                 (e.currentTarget as HTMLElement).style.background = 'transparent';
                 (e.currentTarget as HTMLElement).style.color = '#94a3b8';
               }}
-              onClick={() => setOpen(false)}
+              onClick={() => { setOpen(false); navigate('/conta'); }}
             >
               <User className="w-4 h-4" />
               Minha conta
