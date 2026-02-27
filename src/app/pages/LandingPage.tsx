@@ -1,9 +1,9 @@
-import { useState, useRef, useCallback } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router';
 import {
   Upload, Zap, CheckCircle, ArrowRight, Star, Users, TrendingUp, Clock,
   Search, MessageSquare, BarChart2, Target, Shield, ChevronRight, FileText,
-  Award, AlertCircle, LogIn
+  Award, AlertCircle, LogIn, User, ChevronDown
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { useAuth } from '../contexts/AuthContext';
@@ -138,6 +138,14 @@ export function LandingPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email?.split('@')[0] ||
+    'Usuário';
+  const avatarUrl = user?.user_metadata?.avatar_url as string | undefined;
 
   const handleFileSelect = useCallback((file: File) => {
     if (!user) {
@@ -198,14 +206,77 @@ export function LandingPage() {
               <a href="#recursos" style={{ color: '#94a3b8', fontSize: '0.875rem' }} className="hover:text-white transition-colors">Recursos</a>
               <a href="#precos" style={{ color: '#94a3b8', fontSize: '0.875rem' }} className="hover:text-white transition-colors">Preços</a>
             </div>
+
             {user ? (
-            <button
-              onClick={handleUploadClick}
-              className="px-4 py-2 rounded-lg text-white transition-all hover:opacity-90 text-sm"
-              style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 600 }}
-            >
-              Analisar meu perfil
-            </button>
+              <div className="flex items-center gap-3">
+                {/* Analisar button */}
+                <button
+                  onClick={handleUploadClick}
+                  className="hidden sm:flex px-4 py-2 rounded-lg text-white transition-all hover:opacity-90 text-sm items-center gap-2"
+                  style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 600 }}
+                >
+                  <Upload className="w-3.5 h-3.5" />
+                  Analisar perfil
+                </button>
+
+                {/* User chip */}
+                <div className="relative">
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all"
+                    style={{
+                      background: userMenuOpen ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.07)',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                    }}
+                  >
+                    {avatarUrl ? (
+                      <img src={avatarUrl} alt={displayName} className="w-7 h-7 rounded-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                    ) : (
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: 'linear-gradient(135deg, #3b82f6, #7c3aed)' }}>
+                        {displayName.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="hidden sm:block text-sm font-medium max-w-28 truncate" style={{ color: '#e2e8f0' }}>
+                      {displayName}
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5" style={{ color: '#64748b', transform: userMenuOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                  </button>
+
+                  {userMenuOpen && (
+                    <div
+                      className="absolute right-0 mt-2 w-52 rounded-xl py-2 z-50"
+                      style={{ background: '#1e293b', border: '1px solid #334155', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
+                    >
+                      <div className="px-4 py-2.5 border-b" style={{ borderColor: '#334155' }}>
+                        <div className="text-sm font-semibold truncate" style={{ color: '#f1f5f9' }}>{displayName}</div>
+                        <div className="text-xs truncate mt-0.5" style={{ color: '#64748b' }}>{user.email}</div>
+                      </div>
+                      <div className="py-1">
+                        <button
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:opacity-80"
+                          style={{ color: '#94a3b8' }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLElement).style.color = '#f1f5f9'; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#94a3b8'; }}
+                          onClick={() => { setUserMenuOpen(false); navigate('/conta'); }}
+                        >
+                          <User className="w-4 h-4" />
+                          Minha conta
+                        </button>
+                        <button
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors"
+                          style={{ color: '#94a3b8' }}
+                          onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLElement).style.color = '#f1f5f9'; }}
+                          onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = '#94a3b8'; }}
+                          onClick={() => { setUserMenuOpen(false); navigate('/dashboard'); }}
+                        >
+                          <BarChart2 className="w-4 h-4" />
+                          Dashboard
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             ) : (
               <Link
                 to="/auth"

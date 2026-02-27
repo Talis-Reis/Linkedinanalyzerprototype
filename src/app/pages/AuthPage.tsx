@@ -37,45 +37,10 @@ function GoogleIcon() {
   );
 }
 
-function GithubIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
-    </svg>
-  );
-}
-
-const features = [
-  {
-    icon: BarChart2,
-    label: 'Score de Empregabilidade',
-    color: '#3b82f6',
-    bg: 'rgba(59,130,246,0.15)',
-  },
-  {
-    icon: Target,
-    label: 'Comparador de Vagas',
-    color: '#10b981',
-    bg: 'rgba(16,185,129,0.15)',
-  },
-  {
-    icon: MessageSquare,
-    label: 'Gerador de Mensagens',
-    color: '#f59e0b',
-    bg: 'rgba(245,158,11,0.15)',
-  },
-  {
-    icon: TrendingUp,
-    label: 'Simulador ATS',
-    color: '#8b5cf6',
-    bg: 'rgba(139,92,246,0.15)',
-  },
-];
-
 export function AuthPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { user, loading, signInWithGoogle, signInWithGithub, signInWithMagicLink } = useAuth();
+  const { user, loading, signInWithGoogle, signInWithMagicLink } = useAuth();
 
   const returnTo = searchParams.get('returnTo') || '/';
   const errorParam = searchParams.get('error');
@@ -84,12 +49,10 @@ export function AuthPage() {
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [magicLinkLoading, setMagicLinkLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [githubLoading, setGithubLoading] = useState(false);
   const [error, setError] = useState<string | null>(
     errorParam === 'callback' ? 'Falha na autenticação. Tente novamente.' : null
   );
 
-  // Redirect if already authenticated
   useEffect(() => {
     if (!loading && user) {
       navigate(returnTo, { replace: true });
@@ -104,17 +67,6 @@ export function AuthPage() {
     } catch {
       setError('Erro ao conectar com Google. Tente novamente.');
       setGoogleLoading(false);
-    }
-  };
-
-  const handleGithubSignIn = async () => {
-    setError(null);
-    setGithubLoading(true);
-    try {
-      await signInWithGithub();
-    } catch {
-      setError('Erro ao conectar com GitHub. Tente novamente.');
-      setGithubLoading(false);
     }
   };
 
@@ -153,12 +105,11 @@ export function AuthPage() {
       className="min-h-screen flex"
       style={{ background: '#0f172a' }}
     >
-      {/* Left Panel – Decorative (hidden on mobile) */}
+      {/* Left Panel */}
       <div
         className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 overflow-hidden"
         style={{ background: 'linear-gradient(160deg, #0f172a 0%, #1e3a8a 60%, #312e81 100%)' }}
       >
-        {/* Background orbs */}
         <div className="absolute inset-0 pointer-events-none">
           <div
             className="absolute top-1/4 left-1/4 w-72 h-72 rounded-full opacity-20"
@@ -170,7 +121,6 @@ export function AuthPage() {
           />
         </div>
 
-        {/* Top logo */}
         <Link to="/" className="flex items-center gap-2 relative z-10">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
@@ -183,7 +133,6 @@ export function AuthPage() {
           </span>
         </Link>
 
-        {/* Center content */}
         <div className="relative z-10">
           <h2
             className="mb-4"
@@ -209,9 +158,13 @@ export function AuthPage() {
             IA avançada que analisa, otimiza e potencializa seu perfil do LinkedIn para você ser
             encontrado pelos recrutadores certos.
           </p>
-
           <div className="flex flex-col gap-3">
-            {features.map(({ icon: Icon, label, color, bg }) => (
+            {[
+              { icon: BarChart2, label: 'Score de Empregabilidade', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
+              { icon: Target, label: 'Comparador de Vagas', color: '#10b981', bg: 'rgba(16,185,129,0.15)' },
+              { icon: MessageSquare, label: 'Gerador de Mensagens', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
+              { icon: TrendingUp, label: 'Simulador ATS', color: '#8b5cf6', bg: 'rgba(139,92,246,0.15)' },
+            ].map(({ icon: Icon, label, color, bg }) => (
               <div key={label} className="flex items-center gap-3">
                 <div
                   className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
@@ -225,7 +178,6 @@ export function AuthPage() {
           </div>
         </div>
 
-        {/* Bottom testimonial */}
         <div
           className="relative z-10 p-5 rounded-2xl"
           style={{
@@ -264,7 +216,6 @@ export function AuthPage() {
 
       {/* Right Panel – Auth Form */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 py-12">
-        {/* Mobile logo */}
         <Link to="/" className="flex items-center gap-2 mb-10 lg:hidden">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
@@ -278,7 +229,6 @@ export function AuthPage() {
         </Link>
 
         <div className="w-full max-w-md">
-          {/* Header */}
           <div className="mb-8">
             <h1
               style={{
@@ -297,7 +247,6 @@ export function AuthPage() {
             </p>
           </div>
 
-          {/* Error message */}
           {error && (
             <div
               className="flex items-center gap-3 p-4 rounded-xl mb-6"
@@ -309,7 +258,6 @@ export function AuthPage() {
           )}
 
           {magicLinkSent ? (
-            /* Magic Link Sent State */
             <div className="flex flex-col items-center text-center gap-6 py-4">
               <div
                 className="w-20 h-20 rounded-full flex items-center justify-center"
@@ -335,11 +283,11 @@ export function AuthPage() {
             </div>
           ) : (
             <>
-              {/* OAuth Buttons */}
-              <div className="flex flex-col gap-3 mb-6">
+              {/* Google Button */}
+              <div className="mb-6">
                 <button
                   onClick={handleGoogleSignIn}
-                  disabled={googleLoading || githubLoading}
+                  disabled={googleLoading}
                   className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-semibold transition-all hover:opacity-90 disabled:opacity-60"
                   style={{
                     background: '#ffffff',
@@ -354,25 +302,6 @@ export function AuthPage() {
                     <GoogleIcon />
                   )}
                   Continuar com Google
-                </button>
-
-                <button
-                  onClick={handleGithubSignIn}
-                  disabled={googleLoading || githubLoading}
-                  className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl font-semibold transition-all hover:opacity-90 disabled:opacity-60"
-                  style={{
-                    background: '#24292f',
-                    color: '#f8fafc',
-                    fontSize: '0.9rem',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                  }}
-                >
-                  {githubLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <GithubIcon />
-                  )}
-                  Continuar com GitHub
                 </button>
               </div>
 
@@ -451,7 +380,6 @@ export function AuthPage() {
             </>
           )}
 
-          {/* Footer */}
           <p className="mt-8 text-center" style={{ color: '#475569', fontSize: '0.75rem' }}>
             Ao continuar, você concorda com nossos{' '}
             <span style={{ color: '#60a5fa' }} className="cursor-pointer hover:underline">
