@@ -1,60 +1,26 @@
 import { useState } from 'react';
 import {
-  CheckCircle, XCircle, Loader2, Target, Zap, AlertTriangle, ChevronRight
+  CheckCircle, XCircle, Loader2, Target, Zap, ChevronRight, Sparkles, Lightbulb,
 } from 'lucide-react';
 import {
-  RadialBarChart, RadialBar, PolarAngleAxis, ResponsiveContainer
+  RadialBarChart, RadialBar, PolarAngleAxis, ResponsiveContainer,
 } from 'recharts';
 import { Navbar } from '../components/Navbar';
 
 const PRESENT_SKILLS = ['React', 'TypeScript', 'Node.js', 'SQL', 'Git', 'REST API', 'HTML', 'CSS', 'JavaScript'];
+
 const SAMPLE_JOBS = [
   {
     title: 'Senior Frontend Developer — Itaú',
-    description: `Buscamos um desenvolvedor Frontend Sênior apaixonado por criar experiências digitais de alta qualidade.
-
-Requisitos:
-- 4+ anos de experiência com React e TypeScript
-- Experiência com Next.js e SSR
-- Conhecimento de testes unitários (Jest, Testing Library)
-- Familiaridade com Docker e CI/CD pipelines
-- Experiência com design systems e Figma
-- Scrum/Agile mindset
-
-Diferencial:
-- AWS ou Azure
-- GraphQL
-- Micro-frontends`,
+    description: `Buscamos um desenvolvedor Frontend Sênior apaixonado por criar experiências digitais de alta qualidade.\n\nRequisitos:\n- 4+ anos de experiência com React e TypeScript\n- Experiência com Next.js e SSR\n- Conhecimento de testes unitários (Jest, Testing Library)\n- Familiaridade com Docker e CI/CD pipelines\n- Experiência com design systems e Figma\n- Scrum/Agile mindset\n\nDiferencial:\n- AWS ou Azure\n- GraphQL\n- Micro-frontends`,
   },
   {
     title: 'Tech Lead — Startup Fintech',
-    description: `Tech Lead para liderar time de 5 devs em startup fintech de alto crescimento.
-
-Stack: React, Node.js, TypeScript, PostgreSQL, AWS
-Metodologia: Scrum com sprints de 2 semanas
-
-Requisitos:
-- 6+ anos de experiência em desenvolvimento
-- Experiência com arquitetura de microservices
-- Docker e Kubernetes
-- CI/CD pipelines
-- Mentoring de desenvolvedores juniores
-- Redis e MongoDB
-- GraphQL`,
+    description: `Tech Lead para liderar time de 5 devs em startup fintech de alto crescimento.\n\nStack: React, Node.js, TypeScript, PostgreSQL, AWS\nMetodologia: Scrum com sprints de 2 semanas\n\nRequisitos:\n- 6+ anos de experiência em desenvolvimento\n- Experiência com arquitetura de microservices\n- Docker e Kubernetes\n- CI/CD pipelines\n- Mentoring de desenvolvedores juniores\n- Redis e MongoDB\n- GraphQL`,
   },
   {
     title: 'Desenvolvedor Full Stack — Remote',
-    description: `Empresa de SaaS B2B procura desenvolvedor Full Stack para trabalho 100% remoto.
-
-Tecnologias: React, TypeScript, Node.js, PostgreSQL
-
-Requisitos:
-- 3+ anos de experiência full stack
-- React e Node.js sólido
-- Banco de dados relacionais e NoSQL
-- REST APIs
-- Testes automatizados
-- Comunicação em inglês (reuniões mensais)`,
+    description: `Empresa de SaaS B2B procura desenvolvedor Full Stack para trabalho 100% remoto.\n\nTecnologias: React, TypeScript, Node.js, PostgreSQL\n\nRequisitos:\n- 3+ anos de experiência full stack\n- React e Node.js sólido\n- Banco de dados relacionais e NoSQL\n- REST APIs\n- Testes automatizados\n- Comunicação em inglês (reuniões mensais)`,
   },
 ];
 
@@ -77,7 +43,7 @@ function analyzeCompatibility(jobDesc: string): AnalysisResult {
     { kw: 'Docker', test: /docker/ },
     { kw: 'AWS', test: /aws|amazon/ },
     { kw: 'Kubernetes', test: /kubernetes|k8s/ },
-    { kw: 'CI\/CD', test: /ci\/cd|cicd|pipeline/ },
+    { kw: 'CI/CD', test: /ci\/cd|cicd|pipeline/ },
     { kw: 'GraphQL', test: /graphql/ },
     { kw: 'Next.js', test: /next\.js|nextjs/ },
     { kw: 'Agile/Scrum', test: /agile|scrum/ },
@@ -89,8 +55,12 @@ function analyzeCompatibility(jobDesc: string): AnalysisResult {
   ];
 
   const required = allKeywords.filter(({ test }) => test.test(lower));
-  const presentInJob = required.filter(({ kw }) => PRESENT_SKILLS.some(s => s.toLowerCase() === kw.toLowerCase()) || ['SQL', 'Git', 'REST API'].includes(kw));
-  const missingInProfile = required.filter(({ kw }) => !PRESENT_SKILLS.some(s => s.toLowerCase() === kw.toLowerCase()) && !['REST API', 'Git'].includes(kw));
+  const presentInJob = required.filter(
+    ({ kw }) => PRESENT_SKILLS.some(s => s.toLowerCase() === kw.toLowerCase()) || ['SQL', 'Git', 'REST API'].includes(kw)
+  );
+  const missingInProfile = required.filter(
+    ({ kw }) => !PRESENT_SKILLS.some(s => s.toLowerCase() === kw.toLowerCase()) && !['REST API', 'Git'].includes(kw)
+  );
 
   const matchPct = required.length === 0 ? 80 : Math.min(95, Math.round((presentInJob.length / required.length) * 100));
 
@@ -136,31 +106,46 @@ export function JobComparatorPage() {
   };
 
   const matchColor = result
-    ? result.match >= 80 ? '#22c55e' : result.match >= 60 ? '#f59e0b' : '#ef4444'
+    ? result.match >= 80 ? '#10b981' : result.match >= 60 ? '#f59e0b' : '#f43f5e'
     : '#3b82f6';
 
   const matchLabel = result
     ? result.match >= 80 ? 'Alta compatibilidade' : result.match >= 60 ? 'Compatibilidade moderada' : 'Baixa compatibilidade'
     : '';
 
+  const matchBg = result
+    ? result.match >= 80 ? 'rgba(16,185,129,0.12)' : result.match >= 60 ? 'rgba(245,158,11,0.12)' : 'rgba(244,63,94,0.12)'
+    : 'transparent';
+
   return (
-    <div style={{ background: '#f8fafc', minHeight: '100vh' }}>
+    <div style={{ background: '#0f172a', minHeight: '100vh' }}>
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
         {/* Header */}
         <div className="mb-8">
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a' }}>
-            Comparador de Vagas
-          </h1>
-          <p style={{ color: '#64748b', marginTop: 4 }}>
-            Cole a descrição da vaga abaixo e descubra seu percentual de compatibilidade
-          </p>
+          <div className="flex items-center gap-3 mb-2">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, rgba(37,99,235,0.3), rgba(124,58,237,0.3))', border: '1px solid rgba(99,102,241,0.3)' }}
+            >
+              <Target className="w-5 h-5" style={{ color: '#818cf8' }} />
+            </div>
+            <div>
+              <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f1f5f9' }}>
+                Comparador de Vagas
+              </h1>
+              <p style={{ color: '#64748b', fontSize: '0.875rem', marginTop: 1 }}>
+                Cole a descrição da vaga e descubra seu percentual de compatibilidade com IA
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Sample jobs */}
         <div className="mb-6">
-          <p style={{ color: '#64748b', fontSize: '0.8rem', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <p style={{ color: '#475569', fontSize: '0.75rem', fontWeight: 600, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Exemplos rápidos
           </p>
           <div className="flex flex-wrap gap-2">
@@ -168,8 +153,13 @@ export function JobComparatorPage() {
               <button
                 key={job.title}
                 onClick={() => setJobDesc(job.description)}
-                className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80"
-                style={{ background: '#eff6ff', color: '#2563eb', fontWeight: 500, border: '1px solid #bfdbfe' }}
+                className="px-3 py-1.5 rounded-lg text-sm transition-all hover:opacity-80 active:scale-95"
+                style={{
+                  background: 'rgba(37,99,235,0.12)',
+                  color: '#93c5fd',
+                  fontWeight: 500,
+                  border: '1px solid rgba(59,130,246,0.25)',
+                }}
               >
                 {job.title}
               </button>
@@ -178,33 +168,41 @@ export function JobComparatorPage() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Input */}
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #e2e8f0' }}>
-              <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+          {/* Left column — Input */}
+          <div className="flex flex-col gap-4">
+
+            {/* Textarea card */}
+            <div
+              className="rounded-2xl p-6"
+              style={{ background: '#1e293b', border: '1px solid #334155' }}
+            >
+              <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#f1f5f9', marginBottom: 12 }}>
                 Descrição da Vaga
               </h2>
               <textarea
                 value={jobDesc}
                 onChange={(e) => setJobDesc(e.target.value)}
                 placeholder="Cole aqui a descrição completa da vaga — título, requisitos, responsabilidades, stack técnica..."
-                className="w-full rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all p-4 text-sm"
+                className="w-full rounded-xl resize-none focus:outline-none transition-all p-4 text-sm"
                 style={{
                   minHeight: 280,
-                  background: '#f8fafc',
-                  border: '1px solid #e2e8f0',
-                  color: '#374151',
-                  lineHeight: 1.6,
+                  background: '#0f172a',
+                  border: '1px solid #334155',
+                  color: '#cbd5e1',
+                  lineHeight: 1.7,
+                  outline: 'none',
                 }}
+                onFocus={(e) => { e.target.style.borderColor = '#6366f1'; }}
+                onBlur={(e) => { e.target.style.borderColor = '#334155'; }}
               />
               <div className="flex items-center justify-between mt-4">
-                <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>
+                <span style={{ color: '#475569', fontSize: '0.78rem' }}>
                   {jobDesc.length} caracteres
                 </span>
                 <button
                   onClick={analyze}
                   disabled={!jobDesc.trim() || loading}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center gap-2 px-6 py-3 rounded-xl text-white transition-all hover:opacity-90 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
                   style={{ background: 'linear-gradient(135deg, #2563eb, #7c3aed)', fontWeight: 700, fontSize: '0.875rem' }}
                 >
                   {loading ? (
@@ -222,17 +220,27 @@ export function JobComparatorPage() {
               </div>
             </div>
 
-            {/* Your profile summary */}
-            <div className="bg-white rounded-2xl p-6" style={{ border: '1px solid #e2e8f0' }}>
-              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
+            {/* Profile skills card */}
+            <div
+              className="rounded-2xl p-6"
+              style={{ background: '#1e293b', border: '1px solid #334155' }}
+            >
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#f1f5f9', marginBottom: 4 }}>
                 Seu Perfil Atual
               </h3>
+              <p style={{ color: '#475569', fontSize: '0.78rem', marginBottom: 12 }}>
+                Skills detectadas pela IA na última análise do seu PDF
+              </p>
               <div className="flex flex-wrap gap-2">
                 {PRESENT_SKILLS.map((skill) => (
                   <span
                     key={skill}
-                    className="px-2.5 py-1 rounded-full text-xs"
-                    style={{ background: '#dcfce7', color: '#15803d', fontWeight: 600 }}
+                    className="px-2.5 py-1 rounded-lg text-xs font-semibold"
+                    style={{
+                      background: 'rgba(16,185,129,0.1)',
+                      color: '#34d399',
+                      border: '1px solid rgba(16,185,129,0.2)',
+                    }}
                   >
                     {skill}
                   </span>
@@ -241,59 +249,86 @@ export function JobComparatorPage() {
             </div>
           </div>
 
-          {/* Results */}
+          {/* Right column — Results */}
           <div>
+            {/* Empty state */}
             {!result && !loading && (
               <div
                 className="rounded-2xl p-10 flex flex-col items-center justify-center text-center"
-                style={{ background: '#fff', border: '2px dashed #e2e8f0', minHeight: 380 }}
+                style={{ background: '#1e293b', border: '2px dashed #334155', minHeight: 400 }}
               >
-                <Target className="w-12 h-12 mb-4" style={{ color: '#cbd5e1' }} />
-                <p style={{ color: '#94a3b8', fontSize: '1rem', fontWeight: 600 }}>
+                <div
+                  className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
+                  style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.15)' }}
+                >
+                  <Target className="w-8 h-8" style={{ color: '#475569' }} />
+                </div>
+                <p style={{ color: '#64748b', fontSize: '1rem', fontWeight: 600 }}>
                   Cole uma descrição de vaga e clique em Analisar
                 </p>
-                <p style={{ color: '#cbd5e1', fontSize: '0.875rem', marginTop: 8 }}>
+                <p style={{ color: '#334155', fontSize: '0.875rem', marginTop: 8 }}>
                   O resultado aparecerá aqui em segundos
                 </p>
               </div>
             )}
 
+            {/* Loading state */}
             {loading && (
               <div
                 className="rounded-2xl p-10 flex flex-col items-center justify-center text-center"
-                style={{ background: '#fff', border: '1px solid #e2e8f0', minHeight: 380 }}
+                style={{ background: '#1e293b', border: '1px solid #334155', minHeight: 400 }}
               >
                 <div className="relative mb-6">
                   <div
-                    className="w-20 h-20 rounded-full border-4 border-blue-100"
-                    style={{ borderTopColor: '#3b82f6' }}
+                    className="w-20 h-20 rounded-full border-4"
+                    style={{ borderColor: 'rgba(99,102,241,0.15)', borderTopColor: '#6366f1', animation: 'spin 1s linear infinite' }}
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+                    <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#818cf8' }} />
                   </div>
                 </div>
-                <p style={{ color: '#0f172a', fontWeight: 700 }}>Calculando compatibilidade...</p>
-                <p style={{ color: '#64748b', fontSize: '0.875rem', marginTop: 4 }}>
+                <p style={{ color: '#f1f5f9', fontWeight: 700 }}>Calculando compatibilidade...</p>
+                <p style={{ color: '#475569', fontSize: '0.875rem', marginTop: 6 }}>
                   Comparando seu perfil com os requisitos da vaga
                 </p>
+                <div className="flex gap-1.5 mt-6">
+                  {['Lendo requisitos', 'Mapeando skills', 'Gerando score'].map((step, i) => (
+                    <span
+                      key={step}
+                      className="px-2.5 py-1 rounded-full text-xs font-medium"
+                      style={{ background: 'rgba(99,102,241,0.1)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.2)', animationDelay: `${i * 0.3}s` }}
+                    >
+                      {step}
+                    </span>
+                  ))}
+                </div>
               </div>
             )}
 
+            {/* Results */}
             {result && !loading && (
-              <div className="space-y-4">
-                {/* Match percentage */}
-                <div className="bg-white rounded-2xl p-6 text-center" style={{ border: '1px solid #e2e8f0' }}>
-                  <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: 16 }}>
-                    Compatibilidade com a Vaga
-                  </h2>
-                  <div className="flex items-center justify-center mb-4">
-                    <div style={{ height: 160 }}>
-                      <ResponsiveContainer width={180} height={160}>
+              <div className="flex flex-col gap-4">
+
+                {/* Score gauge */}
+                <div
+                  className="rounded-2xl p-6 text-center"
+                  style={{ background: '#1e293b', border: '1px solid #334155' }}
+                >
+                  <div className="flex items-center justify-center gap-2 mb-4">
+                    <Sparkles className="w-4 h-4" style={{ color: '#818cf8' }} />
+                    <h2 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#f1f5f9' }}>
+                      Compatibilidade com a Vaga
+                    </h2>
+                  </div>
+
+                  <div className="flex items-center justify-center">
+                    <div className="relative" style={{ width: 180, height: 150 }}>
+                      <ResponsiveContainer width="100%" height="100%">
                         <RadialBarChart
-                          cx={90}
-                          cy={80}
-                          innerRadius={50}
-                          outerRadius={75}
+                          cx="50%"
+                          cy="60%"
+                          innerRadius="55%"
+                          outerRadius="85%"
                           startAngle={210}
                           endAngle={-30}
                           data={[{ value: result.match, fill: matchColor }]}
@@ -302,18 +337,23 @@ export function JobComparatorPage() {
                           <RadialBar
                             dataKey="value"
                             cornerRadius={8}
-                            background={{ fill: '#e2e8f0' }}
+                            background={{ fill: 'rgba(255,255,255,0.05)' }}
+                            isAnimationActive
                           />
                         </RadialBarChart>
                       </ResponsiveContainer>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center" style={{ paddingBottom: 10 }}>
+                        <span style={{ fontSize: '2.5rem', fontWeight: 900, color: matchColor, lineHeight: 1 }}>
+                          {result.match}%
+                        </span>
+                        <span style={{ color: '#475569', fontSize: '0.65rem', marginTop: 2 }}>match</span>
+                      </div>
                     </div>
                   </div>
-                  <div style={{ fontSize: '3rem', fontWeight: 900, color: matchColor, lineHeight: 1, marginTop: -16 }}>
-                    {result.match}%
-                  </div>
+
                   <div
-                    className="inline-block px-3 py-1 rounded-full mt-2"
-                    style={{ background: result.match >= 80 ? '#dcfce7' : result.match >= 60 ? '#fef3c7' : '#fee2e2', color: matchColor, fontWeight: 700, fontSize: '0.875rem' }}
+                    className="inline-block px-4 py-1.5 rounded-full mt-1"
+                    style={{ background: matchBg, color: matchColor, fontWeight: 700, fontSize: '0.85rem', border: `1px solid ${matchColor}33` }}
                   >
                     {matchLabel}
                   </div>
@@ -321,15 +361,23 @@ export function JobComparatorPage() {
 
                 {/* Present skills */}
                 {result.present.length > 0 && (
-                  <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
-                      ✅ Você tem ({result.present.length} de {result.present.length + result.missing.length})
+                  <div
+                    className="rounded-2xl p-5"
+                    style={{ background: '#1e293b', border: '1px solid #334155' }}
+                  >
+                    <h3 className="flex items-center gap-2 mb-3" style={{ fontSize: '0.875rem', fontWeight: 700, color: '#34d399' }}>
+                      <CheckCircle className="w-4 h-4" />
+                      Você tem ({result.present.length} de {result.present.length + result.missing.length})
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {result.present.map((kw) => (
-                        <div key={kw} className="flex items-center gap-1.5 px-3 py-1 rounded-full" style={{ background: '#dcfce7', border: '1px solid #86efac' }}>
-                          <CheckCircle className="w-3.5 h-3.5 text-green-600" />
-                          <span style={{ color: '#15803d', fontSize: '0.8rem', fontWeight: 600 }}>{kw}</span>
+                        <div
+                          key={kw}
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-lg"
+                          style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)' }}
+                        >
+                          <CheckCircle className="w-3 h-3" style={{ color: '#34d399' }} />
+                          <span style={{ color: '#34d399', fontSize: '0.8rem', fontWeight: 600 }}>{kw}</span>
                         </div>
                       ))}
                     </div>
@@ -338,15 +386,23 @@ export function JobComparatorPage() {
 
                 {/* Missing skills */}
                 {result.missing.length > 0 && (
-                  <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
-                      ❌ Você não tem ({result.missing.length})
+                  <div
+                    className="rounded-2xl p-5"
+                    style={{ background: '#1e293b', border: '1px solid #334155' }}
+                  >
+                    <h3 className="flex items-center gap-2 mb-3" style={{ fontSize: '0.875rem', fontWeight: 700, color: '#fb7185' }}>
+                      <XCircle className="w-4 h-4" />
+                      A desenvolver ({result.missing.length})
                     </h3>
                     <div className="flex flex-wrap gap-2">
                       {result.missing.map((kw) => (
-                        <div key={kw} className="flex items-center gap-1.5 px-3 py-1 rounded-full" style={{ background: '#fee2e2', border: '1px solid #fca5a5' }}>
-                          <XCircle className="w-3.5 h-3.5 text-red-500" />
-                          <span style={{ color: '#dc2626', fontSize: '0.8rem', fontWeight: 600 }}>{kw}</span>
+                        <div
+                          key={kw}
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-lg"
+                          style={{ background: 'rgba(244,63,94,0.08)', border: '1px solid rgba(244,63,94,0.25)' }}
+                        >
+                          <XCircle className="w-3 h-3" style={{ color: '#fb7185' }} />
+                          <span style={{ color: '#fb7185', fontSize: '0.8rem', fontWeight: 600 }}>{kw}</span>
                         </div>
                       ))}
                     </div>
@@ -354,19 +410,41 @@ export function JobComparatorPage() {
                 )}
 
                 {/* Suggestions */}
-                <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid #e2e8f0' }}>
-                  <h3 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', marginBottom: 12 }}>
-                    💡 Como aumentar sua compatibilidade
+                <div
+                  className="rounded-2xl p-5"
+                  style={{ background: '#1e293b', border: '1px solid #334155' }}
+                >
+                  <h3 className="flex items-center gap-2 mb-4" style={{ fontSize: '0.875rem', fontWeight: 700, color: '#f1f5f9' }}>
+                    <Lightbulb className="w-4 h-4 text-amber-400" />
+                    Como aumentar sua compatibilidade
                   </h3>
-                  <div className="space-y-3">
+                  <div className="flex flex-col gap-3">
                     {result.suggestions.map((s, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <ChevronRight className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
-                        <p style={{ color: '#374151', fontSize: '0.875rem', lineHeight: 1.6 }}>{s}</p>
+                      <div
+                        key={i}
+                        className="flex items-start gap-3 p-3 rounded-xl"
+                        style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}
+                      >
+                        <div
+                          className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5"
+                          style={{ background: 'rgba(245,158,11,0.2)', color: '#f59e0b' }}
+                        >
+                          {i + 1}
+                        </div>
+                        <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.65 }}>{s}</p>
                       </div>
                     ))}
                   </div>
                 </div>
+
+                {/* Reset */}
+                <button
+                  onClick={() => { setResult(null); setJobDesc(''); }}
+                  className="w-full py-3 rounded-xl text-sm font-semibold transition-all hover:opacity-70"
+                  style={{ background: 'rgba(255,255,255,0.04)', color: '#475569', border: '1px solid #334155' }}
+                >
+                  Analisar outra vaga
+                </button>
               </div>
             )}
           </div>
